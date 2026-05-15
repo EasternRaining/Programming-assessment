@@ -1,5 +1,6 @@
 import math
 import random
+from zipfile import error
 
 
 # checks users enter yes (y) or no (n)
@@ -79,11 +80,30 @@ def int_check(question, low=None, high=None, exit_code=None):
             print(error)
 
 
+def answer_compare(user, comp):
+
+    # If the user and the computer choice is the same, it's a lie
+    if user == comp:
+        round_result = "win"
+
+    # if it's not a win / tie, then it's a loss
+    else:
+        round_result = "lose"
+
+    return round_result
+
+# list of all the "basic" math questions that are going to be played
+Questions_list = []
+
+
+
 # Initialise quiz variables
 mode = "regular"
 questions_played = 0
 end_quiz = "no"
 feedback = ""
+
+
 
 quiz_history = []
 all_scores = []
@@ -118,16 +138,24 @@ while questions_played < num_questions:
     print(rounds_heading)
     print()
 
+    # randomly choose from questions list (remove the [:-1] if needed)
+    comp_choice = random.choice(Questions_list[:-1])
+    print("Computer choice", comp_choice)
+
     # Questions start here
     # set the guesses to 0 at the start of every round
     questions_answered = 0
     already_answered = []
 
-    # User starts answering
-    answer = ""
+
+    # get user answer
+    user_answer = ("Choose: ", Questions_list)
+    print("you chose", user_answer)
+
+    result = answer_compare(user_answer, comp_choice)
 
     # check that they don't want to quit
-    if answer == "xxx":
+    if user_answer == "xxx":
         # set end_game to use so that outer loop can be broken
         end_quiz = "yes"
         break
@@ -161,29 +189,16 @@ while questions_played < num_questions:
 if questions_played > 0:
     # History / Statistics area
 
-    # Calculate statistics
-    all_scores.sort()
-    best_score = all_scores[0]
-    worst_score = all_scores[-1]
-    average_score = sum(all_scores) / len(all_scores)
 
-    # Output Game Statistics
-    print("📊📊📊 Game Statistics 📊📊📊")
-    print(f"Best:{best_score} | Worst:{worst_score} | Average:{average_score:.2f} ")
-    print()
 
-    # ask the user if they want to see their game history and output if requested.
-    see_history = yes_no("\nDo you want to see your game history? ")
+    # ask the user if they want to see their quiz history
+    see_history = yes_no("\nDo you want to see your quiz history? ")
     if see_history == "yes":
         for item in quiz_history:
             print(item)
-            if see_history == "no":
-                break
 
     print()
     print("Thanks for playing.")
 
-
-
-
-
+else:
+    print("Ight, thanks for playing.")
