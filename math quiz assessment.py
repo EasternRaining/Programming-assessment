@@ -99,7 +99,7 @@ def basic_facts():
         num1 = random.randint(1, 100)
         num2 = random.randint(1, 100)
         answer = num1 + num2
-        question = f" {num1} + {num2}"
+        question = f" {num1} + {num2} = "
 
     # subtraction, slightly more complicated, but we will subtract the number
     elif comp == "-":
@@ -109,7 +109,7 @@ def basic_facts():
         if num2 > num1:
             num1, num2 = num2, num1
         answer = num1 - num2
-        question = f" {num1} - {num2}"
+        question = f" {num1} - {num2} = "
 
 
     # multiplication, also pretty simple, just generate a number from 1 to 12 to multiply and add
@@ -117,8 +117,10 @@ def basic_facts():
         num1 = random.randint(1, 12)
         num2 = random.randint(1, 12)
         answer = num1 * num2
-        question = f" {num1} * {num2}"
+        question = f" {num1} * {num2} = "
 
+    # used to retrieve the answer from the question
+    return question, answer
 
 # will be used as part of the question generation formula later on
 def get_user_answer(question):
@@ -126,7 +128,7 @@ def get_user_answer(question):
     while True:
         response = input(question).lower()
         # user can type in exit code during question to end the quiz
-        if response == "xxx":
+        if response.lower() == "xxx":
             return "xxx"
         # only whole numbers are accepted
         try:
@@ -136,9 +138,8 @@ def get_user_answer(question):
 
 
 
-
-
 """ Quiz Functions """
+
 
 
 
@@ -188,6 +189,22 @@ while questions_played < num_questions:
     print(rounds_heading)
     print()
 
+    # Questions start here, this formula generates the users question, and already prepares the answer
+    question, correct_answer = basic_facts()
+
+    # Get the users answer, this formula receives the users answer
+    # by using the get_user_answer function
+    user_answer = get_user_answer(question)
+
+    # check that they don't want to quit. if the user quits, then break the game
+    if user_answer == "xxx":
+        # set end_quiz to yes so that the loop can be broken
+        end_quiz = "yes"
+        break
+
+
+
+    """ The Quiz """
 
 
 
@@ -199,18 +216,16 @@ while questions_played < num_questions:
 
 if questions_played > 0:
     # Calculate statistics
-    rounds_won = rounds_played  rounds_lost
-    percent_won = rounds_won / rounds_played * 100
-    percent_lost = rounds_lost / rounds_played * 100
+    answered_right = right_answer / questions_played * 100
+    answered_wrong = wrong_answer / questions_played * 100
 
     # Output Game Statistics
     print("📊📊📊 Game Statistics 📊📊📊")
-    print(f"👍 Won: {percent_won:.2f} \t "
-          f"😢 Lost: {percent_lost:.2f} \t "
-          f"👔 Tied: {percent_tied:,2f}")
+    print(f"👍 Won: {answered_right:.2f} \t "
+          f"😢 Lost: {answered_wrong:.2f} \t ")
 
     # ask the user if they want to see their game history and output if requested.
-    see_history = string_checker("\nDo you want to see your game history? ")
+    see_history = yes_no("\nDo you want to see your game history? ")
     if see_history == "yes":
         for item in game_history:
             print(item)
@@ -219,4 +234,7 @@ if questions_played > 0:
     print("Thanks for playing.")
 
 else:
-    print("🐔🐔🐔 Oops - You chickened out! 🐔🐔🐔")
+    print("Ight, Thanks for playing.")
+
+
+    """ The History """
