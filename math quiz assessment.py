@@ -1,9 +1,11 @@
 import math
 import random
-from zipfile import error
+
+""" Quiz Functions """
 
 
-# checks users enter yes (y) or no (n)
+# Check that users have entered a valid
+# option based on a list
 def yes_no(question):
     while True:
         response = input(question).lower()
@@ -18,26 +20,31 @@ def yes_no(question):
             print("Please enter yes / no")
 
 
+# Displays instructions
+
 def instruction():
     print('''
 
 **** Instructions ****
 
-To begin the quiz, choose the number of questions
+Welcome to the Basic Math Quiz
 
-Then choose how many questions you'd like to play <enter> for 
-infinite mode.
+To begin, please choose the number of rounds you'd like
+and press <enter> for infinite rounds.
 
-Your goal is to get as much of these basic maths questions
-right as possible
+Then the computer will generate a math quiz based on
+addition, subtraction, or multiplication, then it's your job
+to answer these math questions correctly.
 
- Good luck.   
+Press <xxx> to exit the quiz at any time
+
+Then your results will be displayed to show you how well you scored
+
+Good luck!
 
     ''')
 
-# checks for an integer with optional upper /
-# lower limits and an optional exit code for infinite mode
-# / quitting the game
+
 def int_check(question, low=None, high=None, exit_code=None):
     # if any integer is allowed...
     if low is None and high is None:
@@ -80,21 +87,62 @@ def int_check(question, low=None, high=None, exit_code=None):
             print(error)
 
 
-def answer_compare(user, comp):
 
-    # If the user and the computer choice is the same, it's a lie
-    if user == comp:
-        round_result = "win"
+def basic_facts():
+    """ outlines the math questions we are going to do"""
+    basicfacts = ['+','-','*']
+    comp = random.choice(basicfacts)
 
-    # if it's not a win / tie, then it's a loss
+    # addition, simple use random randint to generate random numbers from
+    # 1 to 100 which we will then add together
+    if comp == "+":
+        num1 = random.randint(1, 100)
+        num2 = random.randint(1, 100)
+        answer = num1 + num2
+        question = f" {num1} + {num2}"
+
+    # subtraction, slightly more complicated, but we will subtract the number
+    elif comp == "-":
+        num1 = random.randint(1, 100)
+        num2 = random.randint(1, 100)
+        # if the 2nd number is greater than the 1st number
+        if num2 > num1:
+            num1, num2 = num2, num1
+        answer = num1 - num2
+        question = f" {num1} - {num2}"
+
+
+    # multiplication, also pretty simple, just generate a number from 1 to 12 to multiply and add
     else:
-        round_result = "lose"
+        num1 = random.randint(1, 12)
+        num2 = random.randint(1, 12)
+        answer = num1 * num2
+        question = f" {num1} * {num2}"
 
-    return round_result
 
-# list of all the "basic" math questions that are going to be played
-Questions_list = []
+# will be used as part of the question generation formula later on
+def get_user_answer(question):
 
+    while True:
+        response = input(question).lower()
+        # user can type in exit code during question to end the quiz
+        if response == "xxx":
+            return "xxx"
+        # only whole numbers are accepted
+        try:
+            return int(response)
+        except ValueError:
+            print("Please enter enter in a whole number please")
+
+
+
+
+
+""" Quiz Functions """
+
+
+
+""" The Quiz """
 
 
 # Initialise quiz variables
@@ -102,103 +150,73 @@ mode = "regular"
 questions_played = 0
 end_quiz = "no"
 feedback = ""
-
-
+# for history needs later on
+right_answer = 0
+wrong_answer = 0
 
 quiz_history = []
 all_scores = []
 
-# Starting the quiz
-print("️➕➖ Welcome to the Basic Math Quiz ➗✖️")
+print("➕✖️ Welcome to the Basic Math Quiz ➖➕")
 print()
 
-want_instructions = yes_no("Do you want to read instructions? ")
+# lets the user know if they want instructions
+want_instructions = yes_no("Do you want to read the instructions? ")
 
-# Checks if user wants to play or not (y) yes, (n) no
+# checks users enter yes (y) or no (n)
 if want_instructions == "yes":
     instruction()
 
-# Ask user for number of questions / infinite mode
+
+# Ask user for number of rounds / infinite mode
 num_questions = int_check(question="Rounds <enter for infinite>: ",
-                       low=1, exit_code="")
+                       low=1, exit_code="xxx")
 
 if num_questions == "":
     mode = "infinite"
     num_questions = 99
 
-# Game starts here
+# Game loop starts here
 while questions_played < num_questions:
 
     # Rounds headings
     if mode == "infinite":
-        rounds_heading = f"\n♾️♾️ Round {questions_played + 1} (Infinite Mode) ♾️♾️"
+        rounds_heading = f"\n♾️♾️️ Round {questions_played + 1} (Infinite Mode) ♾️♾️"
     else:
-        rounds_heading = f"\n➕➖ Round {questions_played + 1} of {num_questions} ➗✖️"
+        rounds_heading = f"\n➕✖️ Round {questions_played + 1} of {num_questions} ➖➕"
 
     print(rounds_heading)
     print()
 
-    # randomly choose from questions list (remove the [:-1] if needed)
-    comp_choice = random.choice(Questions_list[:-1])
-    print("Computer choice", comp_choice)
-
-    # Questions start here
-    # set the guesses to 0 at the start of every round
-    questions_answered = 0
-    already_answered = []
 
 
-    # get user answer
-    user_answer = ("Choose: ", Questions_list)
-    print("you chose", user_answer)
-
-    result = answer_compare(user_answer, comp_choice)
-
-    # check that they don't want to quit
-    if user_answer == "xxx":
-        # set end_game to use so that outer loop can be broken
-        end_quiz = "yes"
-        break
-
-    # once you answer a question add +1 to total questions answered
-    questions_answered += 1
 
 
-    # Rounds end here
 
-    # if user has entered exit code, end game!!
-    if end_quiz == "yes":
-        break
+    """ The History """
 
-    questions_played += 1
 
-    # Add round result to game history
-    history_feedback = f"Round {questions_played}: {feedback}"
-    quiz_history.append(history_feedback)
 
-    # add guesses used to score list
-    all_scores.append(questions_answered)
-
-    # if users are in infinite mode, increase number of questions by +1
-    if mode == "infinite":
-        num_questions += 1
-
-# Quiz ends here
-
-# Before calculating statistics:
 if questions_played > 0:
-    # History / Statistics area
+    # Calculate statistics
+    rounds_won = rounds_played  rounds_lost
+    percent_won = rounds_won / rounds_played * 100
+    percent_lost = rounds_lost / rounds_played * 100
 
+    # Output Game Statistics
+    print("📊📊📊 Game Statistics 📊📊📊")
+    print(f"👍 Won: {percent_won:.2f} \t "
+          f"😢 Lost: {percent_lost:.2f} \t "
+          f"👔 Tied: {percent_tied:,2f}")
 
-
-    # ask the user if they want to see their quiz history
-    see_history = yes_no("\nDo you want to see your quiz history? ")
+    # ask the user if they want to see their game history and output if requested.
+    see_history = string_checker("\nDo you want to see your game history? ")
     if see_history == "yes":
-        for item in quiz_history:
+        for item in game_history:
             print(item)
 
     print()
     print("Thanks for playing.")
 
 else:
-    print("Ight, thanks for playing.")
+    print("🐔🐔🐔 Oops - You chickened out! 🐔🐔🐔")
