@@ -90,7 +90,7 @@ def int_check(question, low=None, high=None, exit_code=None):
 
 def basic_facts():
     """ outlines the math questions we are going to do"""
-    basicfacts = ['+','-','*']
+    basicfacts = ['+','-','*','/']
     comp = random.choice(basicfacts)
 
     # addition, simple use random randint to generate random numbers from
@@ -112,12 +112,21 @@ def basic_facts():
         question = f" {num1} - {num2} = "
 
 
-    # multiplication, also pretty simple, just generate a number from 1 to 12 to multiply and add
-    else:
+    # multiplication, also pretty simple, just generate a number from 1 to 12 to multiply together
+    elif comp == "*":
         num1 = random.randint(1, 12)
         num2 = random.randint(1, 12)
         answer = num1 * num2
         question = f" {num1} * {num2} = "
+
+    else: # division
+        # since division is linked with multiplication, I used multiplication
+        # to multiply the 2nd number with the answer to get the 1st number
+        # this is foolproof since all the questions and answers are directly linked to eachother
+        answer = random.randint(1, 12)
+        num2 = random.randint(1, 12)
+        num1 = num2 * answer
+        question = f" {num1} divided by {num2} = "
 
     # used to retrieve the answer from the question
     return question, answer
@@ -154,7 +163,6 @@ feedback = ""
 # for history needs later on
 right_answer = 0
 wrong_answer = 0
-
 quiz_history = []
 all_scores = []
 
@@ -170,9 +178,10 @@ if want_instructions == "yes":
 
 
 # Ask user for number of rounds / infinite mode
-num_questions = int_check(question="Rounds <enter for infinite>: ",
-                       low=1, exit_code="xxx")
+num_questions = int_check(question="Rounds <enter> for infinite: ",
+                       low=1, exit_code="")
 
+# for infinite mode
 if num_questions == "":
     mode = "infinite"
     num_questions = 99
@@ -203,16 +212,49 @@ while questions_played < num_questions:
         break
 
 
+    # if a user answers a question, call back to the correct answer formula
+    if user_answer == correct_answer:
+        print("✅ Correct!")
+        # feedback and right answer are for history purposes later on
+        # use f" to be able to record the users answer
+        feedback = f"{user_answer} ✅ Correct!"
+        right_answer += 1
+    # if the answer is anything but the correct answer, make it an incorrect answer
+    else:
+        print("❌ Incorrect!")
+        # feedback and wrong answer are for history purposes later on
+        # use f" to be able to record the users answer and display the actual correct answers right next to it
+        feedback = f"{user_answer}/{correct_answer} ❌ Incorrect!"
+        wrong_answer += 1
+
+    # Rounds end here
+
+    # if user has entered exit code, end game!!
+    if end_quiz == "yes":
+        break
+
+    questions_played += 1
+
+    # Add round result to game history (taken from HL)
+    # just swapped the variables around to match the math quiz's variables
+    history_feedback = f"Round {questions_played}: {feedback}"
+    quiz_history.append(history_feedback)
+
+
+    # add guesses used to score list
+    all_scores.append(user_answer)
+
+    # if users are in infinite mode, increase number of rounds
+    if mode == "infinite":
+        num_questions += 1
+
 
     """ The Quiz """
 
 
 
 
-
     """ The History """
-
-
 
 if questions_played > 0:
     # Calculate statistics
@@ -221,13 +263,13 @@ if questions_played > 0:
 
     # Output Game Statistics
     print("📊📊📊 Game Statistics 📊📊📊")
-    print(f"👍 Won: {answered_right:.2f} \t "
-          f"😢 Lost: {answered_wrong:.2f} \t ")
+    print(f"👍 Correct: {answered_right:.2f} \t "
+          f"😢 Incorrect: {answered_wrong:.2f} \t ")
 
     # ask the user if they want to see their game history and output if requested.
     see_history = yes_no("\nDo you want to see your game history? ")
     if see_history == "yes":
-        for item in game_history:
+        for item in quiz_history:
             print(item)
 
     print()
@@ -238,3 +280,5 @@ else:
 
 
     """ The History """
+
+# end of the quiz
