@@ -217,14 +217,15 @@ while questions_played < num_questions:
         print("✅ Correct!")
         # feedback and right answer are for history purposes later on
         # use f" to be able to record the users answer
-        feedback = f"{user_answer} ✅ Correct!"
+        feedback = f"✅ Correct! {user_answer}"
         right_answer += 1
     # if the answer is anything but the correct answer, make it an incorrect answer
     else:
         print("❌ Incorrect!")
         # feedback and wrong answer are for history purposes later on
-        # use f" to be able to record the users answer and display the actual correct answers right next to it
-        feedback = f"{user_answer}/{correct_answer} ❌ Incorrect!"
+        # use f" to be able to show the question that they answered incorrectly,
+        # display the actual correct answers and record the users answer right next to it
+        feedback = f"❌ Incorrect! {question}{correct_answer}, Not {user_answer}"
         wrong_answer += 1
 
     # Rounds end here
@@ -261,10 +262,11 @@ if questions_played > 0:
     answered_right = right_answer / questions_played * 100
     answered_wrong = wrong_answer / questions_played * 100
 
+
     # Output Game Statistics
-    print("📊📊📊 Game Statistics 📊📊📊")
-    print(f"👍 Correct: {answered_right:.2f} \t "
-          f"😢 Incorrect: {answered_wrong:.2f} \t ")
+    print("📊📊📊 Quiz Statistics 📊📊📊")
+    print(f"👍 Correct: {answered_right:.2f}% \t "
+          f"😢 Incorrect: {answered_wrong:.2f}% \t ")
 
     # ask the user if they want to see their game history and output if requested.
     see_history = yes_no("\nDo you want to see your game history? ")
