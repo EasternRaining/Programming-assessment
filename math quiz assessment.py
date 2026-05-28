@@ -106,6 +106,7 @@ def basic_facts():
         num1 = random.randint(1, 100)
         num2 = random.randint(1, 100)
         # if the 2nd number is greater than the 1st number
+        # this is to prevent negatives from happening
         if num2 > num1:
             num1, num2 = num2, num1
         answer = num1 - num2
@@ -123,6 +124,7 @@ def basic_facts():
         # since division is linked with multiplication, I used multiplication
         # to multiply the 2nd number with the answer to get the 1st number
         # this is foolproof since all the questions and answers are directly linked to each other
+        # this works because only whole numbered division questions are used making it easier for the user to answer
         answer = random.randint(1, 12)
         num2 = random.randint(1, 12)
         num1 = num2 * answer
