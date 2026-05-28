@@ -29,8 +29,8 @@ def instruction():
 
 Welcome to the Basic Math Quiz
 
-To begin, please choose the number of rounds you'd like
-and press <enter> for infinite rounds.
+To begin, please choose the number of questions you'd like
+and press <enter> for infinite questions.
 
 Then the computer will generate a math quiz based on
 addition, subtraction, or multiplication, then it's your job
@@ -122,7 +122,7 @@ def basic_facts():
     else: # division
         # since division is linked with multiplication, I used multiplication
         # to multiply the 2nd number with the answer to get the 1st number
-        # this is foolproof since all the questions and answers are directly linked to eachother
+        # this is foolproof since all the questions and answers are directly linked to each other
         answer = random.randint(1, 12)
         num2 = random.randint(1, 12)
         num1 = num2 * answer
@@ -178,7 +178,7 @@ if want_instructions == "yes":
 
 
 # Ask user for number of rounds / infinite mode
-num_questions = int_check(question="Rounds <enter> for infinite: ",
+num_questions = int_check(question="How much Questions do you want?, <enter> for infinite: ",
                        low=1, exit_code="")
 
 # for infinite mode
@@ -268,8 +268,8 @@ if questions_played > 0:
     print(f"👍 Correct: {answered_right:.2f}% \t "
           f"😢 Incorrect: {answered_wrong:.2f}% \t ")
 
-    # ask the user if they want to see their game history and output if requested.
-    see_history = yes_no("\nDo you want to see your game history? ")
+    # ask the user if they want to see their quiz history and output if requested.
+    see_history = yes_no("\nDo you want to see your quiz history? ")
     if see_history == "yes":
         for item in quiz_history:
             print(item)
